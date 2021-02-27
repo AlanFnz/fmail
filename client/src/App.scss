@@ -1,38 +1,4 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.content {
+    display: flex;
   }
   
-  :root {
-    --background-black: #000;
-    --background-gray: #f1f1f1;
-    --background-white: #fff;
-    --color-red: #c31a62;
-    --color-yellow: #FEDD82;
-  
-    --font-size-s: 0.8rem;
-    --font-size-m: 1rem;
-    --font-size-l: 2rem;
-  
-    --font-weight-m: 200;
-    --font-weight-l: 400;
-  
-    --margin-s: 4px;
-    --margin-m: 8px;
-    --margin-l: 12px;
-    --margin-logo: 30px;
-  }
-  
-  html {
-    font-family: Roboto, sans-serif;
-  }
-  
-  body {
-    min-width: 1024px;
-  }
-  
-  .link {
-    text-decoration: none;
-    color: inherit;
-  }
