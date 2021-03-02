@@ -1,3 +1,3 @@
 # Fmail
 
-Building a basic implementation of Google Mail client, using agile practices.
+Building a basic implementation (MVP) of Google Mail client.
