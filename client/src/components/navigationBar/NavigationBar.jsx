@@ -1,7 +1,7 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import NavigationList from "./components/navigationList/NavigationList";
-import "./navigationBar.scss";
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import NavigationList from './components/navigationList/NavigationList';
+import './navigationBar.scss';
 
 class NavigationBar extends React.Component {
 
@@ -12,12 +12,12 @@ class NavigationBar extends React.Component {
 
   render () {
     return (
-      <aside className="navigation-bar">
+      <aside className='navigation-bar'>
         <Button
-          data-test="navigation-bar__compose"
-          className="navigation-bar__compose-button"
-          variant="contained"
-          color="secondary"
+          data-test='navigation-bar__compose'
+          className='navigation-bar__compose-button'
+          variant='contained'
+          color='secondary'
           onClick={this.onCompose}
         >
           Compose

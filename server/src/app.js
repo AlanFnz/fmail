@@ -1,11 +1,13 @@
 const express = require("express");
 const path = require("path");
 const morgan = require('morgan');
+const cors = require('cors')
 
 const app = express();
 require("dotenv").config();
 app.use(express.json());
 app.use(morgan('combined'));
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('foo');
@@ -24,7 +26,7 @@ app.get("/emails", (req, res) => {
     {
       id: "2",
       subject: "My subject 2",
-      isImportant: true,
+      isImportant: false,
       body:
         "This is my email, and it is super long so that we are forced to cut it short in the inbox view",
       timestamp: Date.now() + 1002,
@@ -32,7 +34,7 @@ app.get("/emails", (req, res) => {
     {
       id: "3",
       subject: "My subject 3",
-      isImportant: true,
+      isImportant: false,
       body:
         "This is my email, and it is super long so that we are forced to cut it short in the inbox view",
       timestamp: Date.now() + 1003,
