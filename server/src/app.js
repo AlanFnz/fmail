@@ -1,18 +1,25 @@
 const express = require("express");
 const path = require("path");
-const morgan = require('morgan');
-const cors = require('cors')
+const morgan = require("morgan");
+const cors = require("cors");
 
+// Services and utils
+const emailService = require ("./lib/services").emailService;
+const validateIncomingEmail = require("./lib/services/emailService/validateIncomingEmail");
+const catchExceptions = require("./lib/utils/catchExceptions");
+
+// App
 const app = express();
 require("dotenv").config();
 app.use(express.json());
-app.use(morgan('combined'));
+app.use(morgan("combined"));
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('foo');
+app.get("/", (req, res) => {
+  res.send("foo");
 });
 
+// Endpoints
 app.get("/emails", (req, res) => {
   const emails = [
     {
@@ -43,14 +50,18 @@ app.get("/emails", (req, res) => {
   res.json(emails);
 });
 
-app.post('/emails', (req, res) => {
-  console.log(req.body);
-  console.log('-------------------------');
-  res.json(req.body);
-});
+app.post(
+  "/emails",
+  validateIncomingEmail,
+  catchExceptions(async (req, res) => {
+    const { recipients, subject, message } = req.body;
+    const email = await emailService.createEmail(recipients, subject, message);
+    res.json(email);
+  })
+);
 
 app.use((error, req, res, next) => {
-  res.status(500).json({ error: error.message});
+  res.status(500).json({ error: error.message });
 });
 
 module.exports = app;

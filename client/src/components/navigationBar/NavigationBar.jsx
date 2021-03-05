@@ -41,7 +41,7 @@ class NavigationBar extends React.Component {
     const message = event.target.message.value;
     const request = SendEmailRequest(recipients, subject, message);
     try {
-      const response = await fetch('http://localhost:5000/emails');
+      const response = await fetch('http://localhost:5000/emails', request);
       if (!response.ok) {
         const json = await response.json();
         throw new Error(json.error);
