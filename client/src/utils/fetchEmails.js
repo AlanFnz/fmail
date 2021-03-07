@@ -1,21 +1,24 @@
 import paths from "../config/paths";
+import fetchAbsolute from 'fetch-absolute';
+
+const fetchApi = fetchAbsolute(fetch)('http://localhost:5000');
 
 export default fetch => pathname => {
   switch (pathname) {
     case paths.inbox:
-      return fetch(paths.api.inboxEmails);
+      return fetchApi(paths.api.inboxEmails);
 
     case paths.important:
-      return fetch(paths.api.importantEmails);
+      return fetchApi(paths.api.importantEmails);
 
     case paths.sentMail:
-      return fetch(paths.api.sentMailEmails);
+      return fetchApi(paths.api.sentMailEmails);
 
     case paths.drafts:
-      return fetch(paths.api.draftEmails);
+      return fetchApi(paths.api.draftEmails);
 
     case paths.spam:
-      return fetch(Paths.api.spamEmails);
+      return fetchApi(Paths.api.spamEmails);
 
     default:
       throw new Error(`${pathname} is not a valid path`);

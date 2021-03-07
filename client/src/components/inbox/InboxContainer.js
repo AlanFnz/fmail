@@ -6,6 +6,9 @@ import InboxEmail from './utils/InboxEmail';
 import {
   SetLocation
 } from'../../actions/navigationListActions';
+import {
+  SetEmails
+} from'../../actions/inboxActions';
 import Inbox from './Inbox';
 
 const fetchEmailsWithFetch = fetchEmails(window.fetch);
@@ -22,7 +25,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(SetLocation(pathname));
       try {
         const response = await fetchEmailsWithFetch(pathname);
-        console.log(response);
         const json = await response.json();
         const sort = json.sort(timestampSort);
         const emails = sort.map(InboxEmail);
