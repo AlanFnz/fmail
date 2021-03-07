@@ -37,7 +37,8 @@ app.get(
 app.get(
   "/api/v1/sent-emails",
   catchExceptions(async (req, res) => {
-    res.json([]);
+    const email = await emailService.getSentEmails();
+    res.json(email);
   })
 );
 
