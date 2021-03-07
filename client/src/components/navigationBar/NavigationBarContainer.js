@@ -7,6 +7,8 @@ import InboxEmail from '../inbox/utils/InboxEmail';
 import paths from '../../config/paths';
 import NavigationBar from './NavigationBar';
 
+const fetchEmailsWithFetch = fetchEmails(window.fetch);
+
 const mapStateToProps = state => {
   return {
     pathname: state.navigationList.pathname
@@ -22,7 +24,7 @@ const mapDispatchToProps = (dispatch, state) => {
 
       if (paths.sentMail === pathname) {
         try {
-          const response = await fetchEmails(pathname);
+          const response = await fetchEmailsWithFetch(pathname);
           const json = await response.json();
           const sort = json.sort(timestampSort);
           const emails = sort.map(InboxEmail);
