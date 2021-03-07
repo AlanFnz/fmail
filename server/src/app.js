@@ -4,7 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 // Services and utils
-const emailService = require ("./lib/services").emailService;
+const emailService = require("./lib/services").emailService;
 const validateIncomingEmail = require("./lib/services/emailService/validateIncomingEmail");
 const catchExceptions = require("./lib/utils/catchExceptions");
 
@@ -20,38 +20,36 @@ app.get("/", (req, res) => {
 });
 
 // Endpoints
-app.get("/emails", (req, res) => {
-  const emails = [
-    {
-      id: "1",
-      subject: "My subject",
-      isImportant: true,
-      body:
-        "This is my email, and it is super long so that we are forced to cut it short in the inbox view",
-      timestamp: Date.now() + 1001,
-    },
-    {
-      id: "2",
-      subject: "My subject 2",
-      isImportant: false,
-      body:
-        "This is my email, and it is super long so that we are forced to cut it short in the inbox view",
-      timestamp: Date.now() + 1002,
-    },
-    {
-      id: "3",
-      subject: "My subject 3",
-      isImportant: false,
-      body:
-        "This is my email, and it is super long so that we are forced to cut it short in the inbox view",
-      timestamp: Date.now() + 1003,
-    },
-  ];
-  res.json(emails);
-});
+app.get(
+  "/api/v1/inbox-emails",
+  catchExceptions(async (req, res) => {
+    res.json([]);
+  })
+);
+
+app.get(
+  "/api/v1/important-emails",
+  catchExceptions(async (req, res) => {
+    res.json([]);
+  })
+);
+
+app.get(
+  "/api/v1/sent-emails",
+  catchExceptions(async (req, res) => {
+    res.json([]);
+  })
+);
+
+app.get(
+  "/api/v1/draft-emails",
+  catchExceptions(async (req, res) => {
+    res.json([]);
+  })
+);
 
 app.post(
-  "/emails",
+  "/api/v1/emails",
   validateIncomingEmail,
   catchExceptions(async (req, res) => {
     const { recipients, subject, message } = req.body;

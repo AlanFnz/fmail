@@ -8,22 +8,17 @@ import InboxEmail from './utils/InboxEmail';
 class Inbox extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { emails: [] };
   };
 
   async componentDidMount() {
-    const response = await fetch('http://localhost:5000/emails');
-    const json = await response.json();
-    const sortedEmails = json.sort(timestampSort);
-    const emails = sortedEmails.map(incomingEmail => InboxEmail(incomingEmail));
-    this.setState({ emails })
+    this.props.fetchEmails(windows.location.pathname);
   };
 
   render() {
     return (
       <Table>
         <TableBody>
-          {this.state.emails.map(email => (
+          {this.props.emails.map(email => (
             <InboxRow key={email.id} email={email} />
           ))}
         </TableBody>
