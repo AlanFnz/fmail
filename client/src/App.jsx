@@ -24,7 +24,7 @@ const App = ({ alertTitle, showAlert, alertText }) => {
           <Route path={paths.inbox} render={() => <Inbox path={paths.api.inboxEmails} />} />
           <Route path={paths.important} render={() => <Inbox path={paths.api.importantEmails} />} />
           <Route path={paths.sentMail} render={() => <Inbox path={paths.api.sentMailEmails} />} />
-          <Route path={paths.drafts} render={() => <Inbox path={paths.api.draftsEmails} />} />
+          <Route path={paths.draftsEmails} render={() => <Inbox path={paths.api.draftsEmails} />} />
           <Route path={paths.spam} render={() => <Inbox path={paths.api.spamEmails} />} />
         </div>
         <Alert title={alertTitle} open={showAlert} text={alertText} />

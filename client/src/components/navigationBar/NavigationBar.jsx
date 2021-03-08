@@ -5,6 +5,7 @@ import './navigationBar.scss';
 import ComposeEmail from './components/composeEmail/ComposeEmail';
 import ComposeEmailOutcomeAlert from './components/composeEmail/ComposeEmailOutcomeAlert';
 import SendEmailRequest from './components/composeEmail/utils/SendEmailRequest';
+import emailWasStarted from './utils/emailWasStarted';
 
 class NavigationBar extends React.Component {
   constructor() {
@@ -25,8 +26,26 @@ class NavigationBar extends React.Component {
     this.setState({ errorAlertOpen: false })
   }
 
-  onCancel = () => {
-    this.setState({ composeEmailOpen: false })
+  onCancel = async (form) => {
+    const recipients = form.recipients.value;
+    const subject = form.subject.value;
+    const message = form.message.value;
+    const request = SendEmailRequest(recipients, subject, message);
+    this.setState({ composeEmailOpen: false });
+
+    if (emailWasStarted({ recipients, subject, message })) {
+      try {
+        const response = await fetch("http://localhost:5000/api/v1/draft-emails", request);
+        const json = await response.json();
+        if (!response.ok) {
+          throw new Error(json.error);
+        }
+        this.props.onDraftSent(this.props.pathname);
+      } catch (error) {
+        const title = "Draft save failed";
+        this.props.onError(title, error.message);
+      }
+    }
   }
 
   onCompose = (event) => {
