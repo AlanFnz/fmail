@@ -48,11 +48,6 @@ class NavigationBar extends React.Component {
     }
   }
 
-  onCompose = (event) => {
-    event.preventDefault();
-    alert('onCompose');
-  }
-
   onSend = async (event) => {
     event.preventDefault();
     const recipients = event.target.recipients.value;

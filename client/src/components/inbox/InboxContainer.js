@@ -22,7 +22,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchEmails: async pathname => {
-      console.log(pathname);
       dispatch(SetLocation(pathname));
       try {
         const response = await fetchEmailsWithFetch(pathname);
