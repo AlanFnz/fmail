@@ -7,8 +7,10 @@ const initState = {
 const navigationListReducer = (state = initState, action) => {
   switch (action.type) {
     case SET_LOCATION:
-      return Object.assign({}, state, { pathname: action.value });
-
+      return {
+        ...state,
+        pathname: action.payload
+      }
     default:
       return state;
   }

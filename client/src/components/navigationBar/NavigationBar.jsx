@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import NavigationList from './components/navigationList/NavigationList';
+import NavigationList from './components/navigationList/NavigationListContainer';
 import './navigationBar.scss';
 import ComposeEmail from './components/composeEmail/ComposeEmail';
 import ComposeEmailOutcomeAlert from './components/composeEmail/ComposeEmailOutcomeAlert';

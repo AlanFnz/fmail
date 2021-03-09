@@ -50,6 +50,14 @@ app.get(
   })
 );
 
+app.get(
+  "/api/v1/spam-emails",
+  catchExceptions(async (req, res) => {
+    const draftEmails = await emailService.getDraftEmails();
+    res.json([]);
+  })
+);
+
 app.post(
   "/api/v1/emails",
   validateIncomingEmail,

@@ -19,7 +19,7 @@ class Inbox extends React.Component {
       <Table>
         <TableBody>
           {this.props.emails.map(email => (
-            <InboxRow key={email.id} email={email} />
+            <InboxRow key={email._id} email={email} />
           ))}
         </TableBody>
       </Table>

@@ -8,6 +8,9 @@ export default () => pathname => {
     case paths.inbox:
       return fetchApi(paths.api.inboxEmails);
 
+    case paths.root:
+      return fetchApi(paths.api.inboxEmails);
+
     case paths.important:
       return fetchApi(paths.api.importantEmails);
 
@@ -18,7 +21,7 @@ export default () => pathname => {
       return fetchApi(paths.api.draftsEmails);
 
     case paths.spam:
-      return fetchApi(Paths.api.spamEmails);
+      return fetchApi(paths.api.spamEmails);
 
     default:
       throw new Error(`${pathname} is not a valid path`);
