@@ -6,6 +6,7 @@ const cors = require("cors");
 // Services and utils
 const emailService = require("./lib/services").emailService;
 const validateIncomingEmail = require("./lib/services/emailService/validateIncomingEmail");
+const validateIncomingImportantRequest = require("./lib/services/emailService/validateIncomingImportantRequest");
 const catchExceptions = require("./lib/utils/catchExceptions");
 
 // App
@@ -30,7 +31,8 @@ app.get(
 app.get(
   "/api/v1/important-emails",
   catchExceptions(async (req, res) => {
-    res.json([]);
+    const emails = await emailService.getImportantEmails();
+    res.json(emails);
   })
 );
 
@@ -64,6 +66,17 @@ app.post(
   catchExceptions(async (req, res) => {
     const { recipients, subject, message } = req.body;
     const email = await emailService.createEmail(recipients, subject, message);
+    res.json(email);
+  })
+);
+
+app.post(
+  "/api/v1/emails/:emailId/important",
+  validateIncomingImportantRequest,
+  catchExceptions(async (req, res) => {
+    const { emailId } = req.params;
+    const { isImportant } = req.body;
+    const email = await emailService.setEmailAsImportant(emailId, isImportant);
     res.json(email);
   })
 );

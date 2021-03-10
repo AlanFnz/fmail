@@ -14,8 +14,18 @@ class EmailService {
     return new this.EmailModel({ recipients, subject, message, type }).save();
   };
 
+  getImportantEmails = () => {
+    return this.EmailModel.find({ isImportant: true });
+  };
+
   getDraftEmails = () => {
     return this.EmailModel.find({ type: "draft" });
+  };
+
+  setEmailAsImportant = async (emailId, isImportant) => {
+    const email = await this.EmailModel.findById(emailId);
+    email.isImportant = isImportant;
+    return email.save();
   };
 
   getSentEmails = () => {

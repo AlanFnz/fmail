@@ -13,20 +13,20 @@ const InboxRow = ({ email }) => {
   return (
     <TableRow className={className}>
       <TableCell className='inbox__table-cell'>
-        <InboxRowIcons isImportant={email.isImportant} emailId={email.id} />
+        <InboxRowIcons isImportant={email.isImportant} emailId={email._id} />
       </TableCell>
       <TableCell className='inbox__table-cell--bold'>
-        <Link className='link inbox__link' to={paths.email(email.id)}>
+        <Link className='link inbox__link' to={paths.email(email._id)}>
           {email.subject}
         </Link>
       </TableCell>
       <TableCell className='inbox__table-cell'>
-        <Link className='link inbox__link' to={paths.email(email.id)}>
+        <Link className='link inbox__link' to={paths.email(email._id)}>
           {email.body}
         </Link>
       </TableCell>
       <TableCell className='inbox__table-cell--bold'>
-        <Link className='link inbox__link' to={paths.email(email.id)}>
+        <Link className='link inbox__link' to={paths.email(email._id)}>
           {email.timestamp}
         </Link>
       </TableCell>

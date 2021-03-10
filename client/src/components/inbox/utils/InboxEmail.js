@@ -1,7 +1,7 @@
 const formatTimestamp = require('../../../utils/formatTimestamp');
 
 const InboxEmail = incomingEmail => {
-  const id = incomingEmail.id || '';
+  const _id = incomingEmail._id || '';
   const subject = incomingEmail.subject || '';
   const body = incomingEmail.message || '';
   const viewedAt = incomingEmail.viewedAt || '';
@@ -16,7 +16,7 @@ const InboxEmail = incomingEmail => {
   }
 
   return {
-    id,
+    _id,
     subject,
     isImportant,
     body,
