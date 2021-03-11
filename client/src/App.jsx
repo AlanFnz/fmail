@@ -5,7 +5,7 @@ import Header from './components/header/Header';
 import NavigationBar from './components/navigationBar/NavigationBarContainer';
 import Inbox from './components/inbox/InboxContainer';
 import Alert from './components/alert/AlertContainer';
-import Email from './components/email/Email';
+import Email from './components/email/EmailContainer';
 // Styles
 import './App.scss';
 import './global.scss';

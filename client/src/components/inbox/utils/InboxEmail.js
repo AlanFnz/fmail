@@ -1,4 +1,4 @@
-const formatTimestamp = require('../../../utils/formatTimestamp');
+import formatTimestamp from '../../../utils/formatTimestamp';
 
 const InboxEmail = incomingEmail => {
   const _id = incomingEmail._id || '';
@@ -25,4 +25,4 @@ const InboxEmail = incomingEmail => {
   };
 };
 
-module.exports = InboxEmail;
+export default InboxEmail;

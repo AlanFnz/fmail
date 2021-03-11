@@ -14,6 +14,10 @@ class EmailService {
     return new this.EmailModel({ recipients, subject, message, type }).save();
   };
 
+  getEmail(emailId) {
+    return this.EmailModel.findById(emailId);
+  }
+  
   getImportantEmails = () => {
     return this.EmailModel.find({ isImportant: true });
   };
