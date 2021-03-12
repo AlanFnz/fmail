@@ -4,26 +4,30 @@ class EmailService {
   };
 
   createEmail = (recipients, subject, message) => {
-    const type = "outgoing"
+    const type = 'outgoing'
     return new this.EmailModel({ recipients, subject, message, type }).save();
   };
 
   createDraftEmail = (recipients, maybeSubject, message) => {
-    const type = "draft"
-    const subject = maybeSubject || "<No subject>";
+    const type = 'draft'
+    const subject = maybeSubject || '<No subject>';
     return new this.EmailModel({ recipients, subject, message, type }).save();
   };
 
-  getEmail(emailId) {
+  getEmail = (emailId) => {
     return this.EmailModel.findById(emailId);
-  }
+  };
+
+  getInboxEmails = () => {
+    return this.EmailModel.find({ type: 'received' });
+  };
   
   getImportantEmails = () => {
     return this.EmailModel.find({ isImportant: true });
   };
 
   getDraftEmails = () => {
-    return this.EmailModel.find({ type: "draft" });
+    return this.EmailModel.find({ type: 'draft' });
   };
 
   setEmailAsImportant = async (emailId, isImportant) => {
@@ -34,7 +38,7 @@ class EmailService {
 
   getSentEmails = () => {
     return this.EmailModel.find({
-      $or: [{ type: "outgoing" }, { type: "sent" }]
+      $or: [{ type: 'outgoing' }, { type: 'sent' }]
     });
   };
 

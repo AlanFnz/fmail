@@ -10,6 +10,8 @@ const InboxRow = ({ email }) => {
     ? 'inbox__table-row--viewed'
     : 'inbox__table-row';
 
+  const emailSnippet = `${email.body.substring(0, 50)}...`;
+
   return (
     <TableRow className={className}>
       <TableCell className='inbox__table-cell'>
@@ -22,7 +24,7 @@ const InboxRow = ({ email }) => {
       </TableCell>
       <TableCell className='inbox__table-cell'>
         <Link className='link inbox__link' to={paths.email(email._id)}>
-          {email.body}
+          {emailSnippet}
         </Link>
       </TableCell>
       <TableCell className='inbox__table-cell--bold'>

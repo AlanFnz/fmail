@@ -77,6 +77,7 @@ describe("EmailService", () => {
       expect(mockSave).toBeCalled();
     });
   });
+
   describe("getSentEmails", () => {
     it("gets sent emails", () => {
       const mockFind = jest.fn();
@@ -132,6 +133,19 @@ describe("EmailService", () => {
       const query = { isImportant: true };
       const emailService = new EmailService(MockEmailModel);
       emailService.getImportantEmails();
+      expect(mockFind).toBeCalledWith(query);
+    });
+  });
+
+  describe("getInboxEmails", () => {
+    it("gets inbox emails", () => {
+      const mockFind = jest.fn();
+      const MockEmailModel = {
+        find: mockFind
+      };
+      const query = { type: "received" };
+      const emailService = new EmailService(MockEmailModel);
+      emailService.getInboxEmails();
       expect(mockFind).toBeCalledWith(query);
     });
   });

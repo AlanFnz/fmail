@@ -24,7 +24,8 @@ app.get("/", (req, res) => {
 app.get(
   "/api/v1/inbox-emails",
   catchExceptions(async (req, res) => {
-    res.json([]);
+    const emails = await emailService.getInboxEmails();
+    res.json(emails);
   })
 );
 
