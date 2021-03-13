@@ -3,6 +3,34 @@ class EmailService {
     this.EmailModel = EmailModel;
   };
 
+  setEmailToViewed = async (emailId, viewedAt) => {
+    const email = await this.EmailModel.findById(emailId);
+    email.viewedAt = viewedAt;
+    return email.save();
+  };
+
+  getEmailOverview = async () => {
+    const unreadInboxEmails = await this.EmailModel.count({
+      type: "received",
+      isSpam: false,
+      viewedAt: undefined
+    });
+
+    const draftEmails = await this.EmailModel.count({ type: "draft" });
+
+    const unreadSpamEmails = await this.EmailModel.count({
+      type: "received",
+      isSpam: true,
+      viewedAt: undefined
+    });
+
+    return {
+      unreadInboxEmails,
+      draftEmails,
+      unreadSpamEmails
+    };
+  };
+
   createEmail = (recipients, subject, message) => {
     const type = 'outgoing'
     return new this.EmailModel({ recipients, subject, message, type }).save();
@@ -19,7 +47,7 @@ class EmailService {
   };
 
   getInboxEmails = () => {
-    return this.EmailModel.find({ type: 'received' });
+    return this.EmailModel.find({ type: 'received', isSpam: false });
   };
   
   getImportantEmails = () => {
@@ -28,6 +56,10 @@ class EmailService {
 
   getDraftEmails = () => {
     return this.EmailModel.find({ type: 'draft' });
+  };
+
+  getSpamEmails = () => {
+    return this.EmailModel.find({ isSpam: true });
   };
 
   setEmailAsImportant = async (emailId, isImportant) => {

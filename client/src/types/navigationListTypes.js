@@ -1,1 +1,2 @@
 export const SET_LOCATION = 'SET_LOCATION';
+export const SET_EMAIL_OVERVIEW = 'SET_EMAIL_OVERVIEW';

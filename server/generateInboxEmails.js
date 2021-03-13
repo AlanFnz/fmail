@@ -17,7 +17,8 @@ for (let i = 0; i < 30; i++) {
   const subject = 'The subject';
   const message = lorem;
   const type = 'received';
-  const email = new EmailModel({ recipients, subject, message, type });
+  const isSpam = false;
+  const email = new EmailModel({ recipients, subject, message, type, isSpam });
   promises.push(email.save());
 };
 

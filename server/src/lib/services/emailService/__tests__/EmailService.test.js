@@ -111,6 +111,24 @@ describe("EmailService", () => {
     });
   });
 
+  describe("setEmailToViewed", () => {
+    it("sets email to viewed", async () => {
+      const mockEmail = {
+        save: jest.fn().mockReturnValue(Promise.resolve())
+      };
+      const MockEmailModel = {
+        findById: jest.fn().mockReturnValueOnce(Promise.resolve(mockEmail))
+      };
+      const emailId = "id";
+      const viewedAt = "2019-01-01";
+      const emailService = new EmailService(MockEmailModel);
+      await emailService.setEmailToViewed(emailId, viewedAt);
+      expect(MockEmailModel.findById).toBeCalledWith(emailId);
+      expect(mockEmail.save).toBeCalledWith();
+      expect(mockEmail.viewedAt).toEqual(viewedAt);
+    });
+  });
+
   describe("getEmail", () => {
     it("gets an email", () => {
       const mockFind = jest.fn();
@@ -146,6 +164,19 @@ describe("EmailService", () => {
       const query = { type: "received" };
       const emailService = new EmailService(MockEmailModel);
       emailService.getInboxEmails();
+      expect(mockFind).toBeCalledWith(query);
+    });
+  });
+
+  describe("getSpamEmails", () => {
+    it("gets spam emails", () => {
+      const mockFind = jest.fn();
+      const MockEmailModel = {
+        find: mockFind
+      };
+      const query = { isSpam: true };
+      const emailService = new EmailService(MockEmailModel);
+      emailService.getSpamEmails();
       expect(mockFind).toBeCalledWith(query);
     });
   });
