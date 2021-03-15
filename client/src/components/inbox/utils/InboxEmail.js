@@ -1,25 +1,35 @@
 import formatTimestamp from '../../../utils/formatTimestamp';
 
 const InboxEmail = incomingEmail => {
-  const _id = incomingEmail._id || '';
-  const subject = incomingEmail.subject || '';
-  const body = incomingEmail.message || '';
-  const viewedAt = incomingEmail.viewedAt || '';
+  const id = incomingEmail._id || "";
+  let maybeRecipients;
+  const subject = incomingEmail.subject || "";
+  const body = incomingEmail.message || "";
+  const viewedAt = incomingEmail.viewedAt || "";
+  const type = incomingEmail.type || "";
   const isImportant = incomingEmail.isImportant || false;
-  let maybeTimestamp = incomingEmail.timestamp || '';
+  let maybeTimestamp = incomingEmail.timestamp || "";
+
+  try {
+    maybeRecipients = incomingEmail.recipients.join(", ");
+  } catch (error) {
+    console.error(error.message);
+    maybeRecipients = "";
+  }
 
   try {
     maybeTimestamp = formatTimestamp(maybeTimestamp);
   } catch (error) {
     console.error(error.message);
-    maybeTimestamp = '';
+    maybeTimestamp = "";
   }
-
   return {
-    _id,
+    id,
     subject,
     isImportant,
     body,
+    type,
+    recipients: maybeRecipients,
     viewedAt,
     timestamp: maybeTimestamp
   };

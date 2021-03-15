@@ -7,7 +7,6 @@ describe("InboxEmail", () => {
     const actual = typeof InboxEmail;
     expect(expected).toEqual(actual);
   });
-
   it("should return empty values for a invalid IncomingEmail", () => {
     const incomingEmail = {};
     const expected = {
@@ -23,7 +22,6 @@ describe("InboxEmail", () => {
     const actual = InboxEmail(incomingEmail);
     expect(expected).toEqual(actual);
   });
-
   it("should return correct values for a valid IncomingEmail", () => {
     const dateTime = "2018-08-19T09:29:21.318Z";
     const formattedDateTime = "2018-08-19 09:29";

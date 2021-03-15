@@ -1,10 +1,10 @@
-import emailWasStarted from '../utils/emailWasStarted';
+import { EmailWasStarted } from '../utils/EmailWasStarted';
 
-describe("emailWasStarted", () => {
+describe("EmailWasStarted", () => {
   it("has a module", () => {
-    expect(emailWasStarted).toBeDefined();
+    expect(EmailWasStarted).toBeDefined();
     const expected = "function";
-    const actual = typeof emailWasStarted;
+    const actual = typeof EmailWasStarted;
     expect(expected).toEqual(actual);
   });
 
@@ -14,7 +14,7 @@ describe("emailWasStarted", () => {
     const subject = "";
     const message = "";
     const request = { recipients, subject, message };
-    const actual = emailWasStarted(request);
+    const actual = EmailWasStarted(request);
     expect(expected).toEqual(actual);
   });
 
@@ -24,7 +24,7 @@ describe("emailWasStarted", () => {
     const subject = "";
     const message = "a";
     const request = { recipients, subject, message };
-    const actual = emailWasStarted(request);
+    const actual = EmailWasStarted(request);
     expect(expected).toEqual(actual);
   });
 
@@ -34,7 +34,7 @@ describe("emailWasStarted", () => {
     const subject = "a";
     const message = "";
     const request = { recipients, subject, message };
-    const actual = emailWasStarted(request);
+    const actual = EmailWasStarted(request);
     expect(expected).toEqual(actual);
   });
 
@@ -44,7 +44,7 @@ describe("emailWasStarted", () => {
     const subject = "";
     const message = "";
     const request = { recipients, subject, message };
-    const actual = emailWasStarted(request);
+    const actual = EmailWasStarted(request);
     expect(expected).toEqual(actual);
   });
 });

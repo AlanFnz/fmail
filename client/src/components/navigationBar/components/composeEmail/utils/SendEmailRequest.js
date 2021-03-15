@@ -1,10 +1,7 @@
+import { RecipientsStringToRecipientsArray } from './RecipientsStringToRecipientsArray';
+
 const SendEmailRequest = (recipientsString, subject, message) => {
-  const regex = /(\s|,|;|\t)/;
-  const recipients = recipientsString
-    .split(regex)
-    .filter(str => str.trim())
-    .filter(str => regex.test(str) === false);
-    
+  const recipients = RecipientsStringToRecipientsArray(recipientsString);
   const data = {
     recipients,
     subject,

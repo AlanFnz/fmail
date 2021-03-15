@@ -1,7 +1,7 @@
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import InboxRow from './components/inboxRow/InboxRow';
+import InboxRow from './components/inboxRow/InboxRowContainer';
 import timestampSort from './utils/timestampSort';
 import InboxEmail from './utils/InboxEmail';
 

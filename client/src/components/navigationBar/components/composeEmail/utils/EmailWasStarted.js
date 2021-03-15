@@ -1,4 +1,4 @@
-export default (request) => {
+export const EmailWasStarted = (request) => {
   const hasRecipients = !!request.recipients && request.recipients.length > 0;
   const hasSubject = !!request.subject && request.subject.length > 0;
   const hasMessage = !!request.message && request.message.length > 0;
