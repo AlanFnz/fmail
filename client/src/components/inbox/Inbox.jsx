@@ -11,7 +11,13 @@ class Inbox extends React.Component {
   };
 
   async componentDidMount() {
-    this.props.fetchEmails(window.location.pathname);
+    const lastPathname = this.props.pathname;
+    const currentPathname = window.location.pathname;
+    this.props.fetchEmails(
+      lastPathname,
+      currentPathname,
+      this.props.emailOffset
+    );
   };
 
   render() {

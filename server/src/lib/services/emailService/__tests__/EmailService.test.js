@@ -87,9 +87,12 @@ describe("EmailService", () => {
       const query = {
         $or: [{ type: "outgoing" }, { type: "sent" }],
       };
+      const skip = 0;
+      const limit = 0;
+      const options = { skip, limit };
       const emailService = new EmailService(MockEmailModel);
-      emailService.getSentEmails();
-      expect(mockFind).toBeCalledWith(query);
+      emailService.getSentEmails(skip, limit);
+      expect(mockFind).toBeCalledWith(query, null, options);
     });
   });
 
@@ -114,10 +117,10 @@ describe("EmailService", () => {
   describe("setEmailToViewed", () => {
     it("sets email to viewed", async () => {
       const mockEmail = {
-        save: jest.fn().mockReturnValue(Promise.resolve())
+        save: jest.fn().mockReturnValue(Promise.resolve()),
       };
       const MockEmailModel = {
-        findById: jest.fn().mockReturnValueOnce(Promise.resolve(mockEmail))
+        findById: jest.fn().mockReturnValueOnce(Promise.resolve(mockEmail)),
       };
       const emailId = "id";
       const viewedAt = "2019-01-01";
@@ -134,7 +137,7 @@ describe("EmailService", () => {
       const mockFind = jest.fn();
       const emailId = "foo";
       const MockEmailModel = {
-        findById: mockFind
+        findById: mockFind,
       };
       const emailService = new EmailService(MockEmailModel);
       emailService.getEmail(emailId);
@@ -148,10 +151,10 @@ describe("EmailService", () => {
       const emailId = "foo";
       const mockRemove = jest.fn();
       const mockEmail = {
-        remove: mockRemove
+        remove: mockRemove,
       };
       const MockEmailModel = {
-        findById: mockFind.mockReturnValue(Promise.resolve(mockEmail))
+        findById: mockFind.mockReturnValue(Promise.resolve(mockEmail)),
       };
       const emailService = new EmailService(MockEmailModel);
       await emailService.removeEmail(emailId);
@@ -167,9 +170,12 @@ describe("EmailService", () => {
         find: mockFind,
       };
       const query = { isImportant: true };
+      const skip = 0;
+      const limit = 0;
+      const options = { skip, limit };
       const emailService = new EmailService(MockEmailModel);
-      emailService.getImportantEmails();
-      expect(mockFind).toBeCalledWith(query);
+      emailService.getImportantEmails(skip, limit);
+      expect(mockFind).toBeCalledWith(query, null, options);
     });
   });
 
@@ -177,12 +183,38 @@ describe("EmailService", () => {
     it("gets inbox emails", () => {
       const mockFind = jest.fn();
       const MockEmailModel = {
-        find: mockFind
+        find: mockFind,
       };
-      const query = { type: "received" };
+      const query = { type: "received", isSpam: false };
+      const skip = 0;
+      const limit = 0;
+      const options = { skip, limit };
       const emailService = new EmailService(MockEmailModel);
-      emailService.getInboxEmails();
-      expect(mockFind).toBeCalledWith(query);
+      emailService.getInboxEmails(skip, limit);
+      expect(mockFind).toBeCalledWith(query, null, options);
+    });
+  });
+
+  describe("getEmailOverview", () => {
+    it("gets email overview", async () => {
+      const mockStats = {
+        unreadInboxEmails: 1,
+        draftEmails: 1,
+        unreadSpamEmails: 1,
+      };
+      const mockCount = jest.fn().mockReturnValue(Promise.resolve(1));
+      const MockEmailModel = {
+        count: mockCount,
+      };
+      const query1 = { type: "received", isSpam: false };
+      const query2 = { type: "draft" };
+      const query3 = { type: "received", isSpam: true };
+      const emailService = new EmailService(MockEmailModel);
+      const result = await emailService.getEmailOverview();
+      expect(mockCount).toHaveBeenNthCalledWith(1, query1);
+      expect(mockCount).toHaveBeenNthCalledWith(2, query2);
+      expect(mockCount).toHaveBeenNthCalledWith(3, query3);
+      expect(mockStats).toEqual(result);
     });
   });
 
@@ -190,12 +222,15 @@ describe("EmailService", () => {
     it("gets spam emails", () => {
       const mockFind = jest.fn();
       const MockEmailModel = {
-        find: mockFind
+        find: mockFind,
       };
       const query = { isSpam: true };
+      const skip = 0;
+      const limit = 0;
+      const options = { skip, limit };
       const emailService = new EmailService(MockEmailModel);
-      emailService.getSpamEmails();
-      expect(mockFind).toBeCalledWith(query);
+      emailService.getSpamEmails(skip, limit);
+      expect(mockFind).toBeCalledWith(query, null, options);
     });
   });
 
@@ -206,36 +241,39 @@ describe("EmailService", () => {
         find: mockFind,
       };
       const query = { type: "draft" };
+      const skip = 0;
+      const limit = 0;
+      const options = { skip, limit };
       const emailService = new EmailService(MockEmailModel);
-      emailService.getDraftEmails();
-      expect(mockFind).toBeCalledWith(query);
+      emailService.getDraftEmails(skip, limit);
+      expect(mockFind).toBeCalledWith(query, null, options);
     });
   });
-});
 
-describe("updateDraftEmail", () => {
-  it("updates a draft email", async () => {
-    const mockFind = jest.fn();
-    const mockEmail = {
-      save: jest.fn()
-    };
-    const MockEmailModel = {
-      findById: mockFind.mockReturnValue(Promise.resolve(mockEmail))
-    };
-    const emailId = "foo";
-    const recipients = ["foo"];
-    const subject = "foo";
-    const message = "foo";
-    const emailService = new EmailService(MockEmailModel);
-    await emailService.updateDraftEmail(
-      emailId,
-      recipients,
-      subject,
-      message
-    );
-    expect(mockFind).toBeCalledWith(emailId);
-    expect(mockEmail.recipients).toEqual(recipients);
-    expect(mockEmail.subject).toEqual(subject);
-    expect(mockEmail.message).toEqual(message);
+  describe("updateDraftEmail", () => {
+    it("updates a draft email", async () => {
+      const mockFind = jest.fn();
+      const mockEmail = {
+        save: jest.fn(),
+      };
+      const MockEmailModel = {
+        findById: mockFind.mockReturnValue(Promise.resolve(mockEmail)),
+      };
+      const emailId = "foo";
+      const recipients = ["foo"];
+      const subject = "foo";
+      const message = "foo";
+      const emailService = new EmailService(MockEmailModel);
+      await emailService.updateDraftEmail(
+        emailId,
+        recipients,
+        subject,
+        message
+      );
+      expect(mockFind).toBeCalledWith(emailId);
+      expect(mockEmail.recipients).toEqual(recipients);
+      expect(mockEmail.subject).toEqual(subject);
+      expect(mockEmail.message).toEqual(message);
+    });
   });
 });

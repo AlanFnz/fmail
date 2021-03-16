@@ -1,0 +1,1 @@
+export const EMAIL_LIMIT = 10;

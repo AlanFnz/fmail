@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import fetchAbsolute from 'fetch-absolute';
 import { ShowAlert } from '../../../../actions/alertActions';
 import { SetEmails } from '../../../../actions/inboxActions';
+import { EMAIL_LIMIT } from '../../../inbox/config';
 import { ShowComposeEmail, ResetForm, SetFormField } from '../../../../actions/composeEmailActions';
 import EmailOverview from '../navigationList/EmailOverview';
 import { SetEmailOverview } from '../../../../actions/navigationListActions';
@@ -60,7 +61,11 @@ const mapDispatchToProps = dispatch => {
           this.onDraftSent(pathname);
         } else if (emailType !== "draft" && EmailWasStarted(form)) {
           const request = SendEmailRequest(recipients, subject, message);
-          const response = await fetchApi(paths.api.draftsEmails, request);
+          const offset = 0;
+          const response = await fetchApi(
+            paths.api.draftsEmails(offset, EMAIL_LIMIT),
+            request
+          );
           const json = await response.json();
 
           if (!response.ok) {
@@ -126,7 +131,8 @@ const mapDispatchToProps = dispatch => {
         dispatch(SetEmailOverview(EmailOverview(json)));
 
         if (paths.sentMail === pathname || paths.drafts === pathname) {
-          const response = await fetchEmailsWithFetch(pathname);
+          const offset = 0;
+          const response = await fetchEmailsWithFetch(pathname, offset, EMAIL_LIMIT);
           const json = await response.json();
           const sort = json.sort(timestampSort);
           const emails = sort.map(InboxEmail);
@@ -145,7 +151,8 @@ const mapDispatchToProps = dispatch => {
         dispatch(SetEmailOverview(EmailOverview(json)));
 
         if (paths.drafts === pathname) {
-          const response = await fetchEmailsWithFetch(pathname);
+          const offset = 0;
+          const response = await fetchEmailsWithFetch(pathname, offset, EMAIL_LIMIT);
           const json = await response.json();
           const sort = json.sort(timestampSort);
           const emails = sort.map(InboxEmail);

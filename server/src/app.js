@@ -16,16 +16,27 @@ app.use(express.json());
 app.use(morgan("combined"));
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("foo");
-});
-
 // Endpoints
+const MAX_EMAILS_PER_PAGE = 50;
+
 app.get(
   "/api/v1/inbox-emails",
   catchExceptions(async (req, res) => {
-    const emails = await emailService.getInboxEmails();
-    res.json(emails);
+    let { offset, limit } = req.query;
+    offset = parseInt(offset);
+    limit = parseInt(limit);
+    limit = Math.min(limit, MAX_EMAILS_PER_PAGE);
+    const email = await emailService.getInboxEmails(offset, limit);
+    res.json(email);
+  })
+);
+
+app.get(
+  "/api/v1/emails/count",
+  catchExceptions(async (req, res) => {
+    const { emailType } = req.query;
+    const count = await emailService.countEmails(emailType);
+    res.json({ count });
   })
 );
 
@@ -33,8 +44,9 @@ app.get(
   "/api/v1/emails/:emailId",
   catchExceptions(async (req, res) => {
     const { emailId } = req.params;
+    const email = await emailService.getEmail(emailId);
     const viewedAt = Date.now();
-    const email = await emailService.setEmailToViewed(emailId, viewedAt);
+    await emailService.setEmailToViewed(emailId, viewedAt);
     res.json(email);
   })
 );
@@ -51,15 +63,23 @@ app.delete(
 app.get(
   "/api/v1/important-emails",
   catchExceptions(async (req, res) => {
-    const emails = await emailService.getImportantEmails();
-    res.json(emails);
+    let { offset, limit } = req.query;
+    offset = parseInt(offset);
+    limit = parseInt(limit);
+    limit = Math.min(limit, MAX_EMAILS_PER_PAGE);
+    const email = await emailService.getImportantEmails(offset, limit);
+    res.json(email);
   })
 );
 
 app.get(
   "/api/v1/sent-emails",
   catchExceptions(async (req, res) => {
-    const email = await emailService.getSentEmails();
+    let { offset, limit } = req.query;
+    offset = parseInt(offset);
+    limit = parseInt(limit);
+    limit = Math.min(limit, MAX_EMAILS_PER_PAGE);
+    const email = await emailService.getSentEmails(offset, limit);
     res.json(email);
   })
 );
@@ -75,7 +95,11 @@ app.get(
 app.get(
   "/api/v1/draft-emails",
   catchExceptions(async (req, res) => {
-    const draftEmails = await emailService.getDraftEmails();
+    let { offset, limit } = req.query;
+    offset = parseInt(offset);
+    limit = parseInt(limit);
+    limit = Math.min(limit, MAX_EMAILS_PER_PAGE);
+    const draftEmails = await emailService.getDraftEmails(offset, limit);
     res.json(draftEmails);
   })
 );
@@ -83,8 +107,12 @@ app.get(
 app.get(
   "/api/v1/spam-emails",
   catchExceptions(async (req, res) => {
-    const spamEmails = await emailService.getSpamEmails();
-    res.json(spamEmails);
+    let { offset, limit } = req.query;
+    offset = parseInt(offset);
+    limit = parseInt(limit);
+    limit = Math.min(limit, MAX_EMAILS_PER_PAGE);
+    const spam = await emailService.getSpamEmails(offset, limit);
+    res.json(spam);
   })
 );
 
@@ -114,6 +142,21 @@ app.put(
 );
 
 app.post(
+  "/api/v1/draft-emails",
+  catchExceptions(async (req, res) => {
+    const { recipients, subject, message } = req.body;
+    const viewedAt = Date.now();
+    const email = await emailService.createDraftEmail(
+      recipients,
+      subject,
+      message,
+      viewedAt
+    );
+    res.json(email);
+  })
+);
+
+app.post(
   "/api/v1/emails/:emailId/important",
   validateIncomingImportantRequest,
   catchExceptions(async (req, res) => {
@@ -124,15 +167,9 @@ app.post(
   })
 );
 
-app.post(
-  "/api/v1/draft-emails",
-  catchExceptions(async (req, res) => {
-    const { recipients, subject, message } = req.body;
-    const viewedAt = Date.now();
-    const email = await emailService.createDraftEmail(recipients, subject, message, viewedAt);
-    res.json(email);
-  })
-);
+app.all("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
+});
 
 app.use((error, req, res, next) => {
   res.status(500).json({ error: error.message });

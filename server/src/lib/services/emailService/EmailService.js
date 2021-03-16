@@ -1,6 +1,40 @@
 class EmailService {
   constructor(EmailModel) {
     this.EmailModel = EmailModel;
+  }
+
+  countEmails = (emailType) => {
+    switch (emailType) {
+      case "inbox":
+        return this.EmailModel.count({
+          type: "received",
+          isSpam: false,
+        });
+
+      case "important":
+        return this.EmailModel.count({
+          isImportant: true,
+        });
+
+      case "sent":
+        return this.EmailModel.count({
+          $or: [{ type: "outgoing" }, { type: "sent" }],
+        });
+
+      case "drafts":
+        return this.EmailModel.count({
+          type: "draft",
+        });
+
+      case "spam":
+        return this.EmailModel.count({
+          type: "received",
+          isSpam: true,
+        });
+
+      default:
+        throw new Error(`${emailType} is not a valid emailType`);
+    }
   };
 
   setEmailToViewed = async (emailId, viewedAt) => {
@@ -13,7 +47,7 @@ class EmailService {
     const unreadInboxEmails = await this.EmailModel.count({
       type: "received",
       isSpam: false,
-      viewedAt: undefined
+      viewedAt: undefined,
     });
 
     const draftEmails = await this.EmailModel.count({ type: "draft" });
@@ -21,25 +55,31 @@ class EmailService {
     const unreadSpamEmails = await this.EmailModel.count({
       type: "received",
       isSpam: true,
-      viewedAt: undefined
+      viewedAt: undefined,
     });
 
     return {
       unreadInboxEmails,
       draftEmails,
-      unreadSpamEmails
+      unreadSpamEmails,
     };
   };
 
   createEmail = (recipients, subject, message) => {
-    const type = 'outgoing'
+    const type = "outgoing";
     return new this.EmailModel({ recipients, subject, message, type }).save();
   };
 
   createDraftEmail = (recipients, maybeSubject, message, viewedAt) => {
-    const type = 'draft'
-    const subject = maybeSubject || '<No subject>';
-    return new this.EmailModel({ recipients, subject, message, type, viewedAt }).save();
+    const type = "draft";
+    const subject = maybeSubject || "<No subject>";
+    return new this.EmailModel({
+      recipients,
+      subject,
+      message,
+      type,
+      viewedAt,
+    }).save();
   };
 
   updateDraftEmail = async (emailId, recipients, subject, message) => {
@@ -49,7 +89,7 @@ class EmailService {
     email.message = message;
 
     return email.save();
-  }
+  };
 
   getEmail = (emailId) => {
     return this.EmailModel.findById(emailId);
@@ -58,22 +98,34 @@ class EmailService {
   removeEmail = async (emailId) => {
     const email = await this.EmailModel.findById(emailId);
     return email.remove();
-  }
-
-  getInboxEmails = () => {
-    return this.EmailModel.find({ type: 'received', isSpam: false });
-  };
-  
-  getImportantEmails = () => {
-    return this.EmailModel.find({ isImportant: true });
   };
 
-  getDraftEmails = () => {
-    return this.EmailModel.find({ type: 'draft' });
+  getInboxEmails = (offset, limit) => {
+    return this.EmailModel.find({ type: "received", isSpam: false }, null, {
+      skip: offset,
+      limit,
+    });
   };
 
-  getSpamEmails = () => {
-    return this.EmailModel.find({ isSpam: true });
+  getImportantEmails = (offset, limit) => {
+    return this.EmailModel.find({ isImportant: true }, null, {
+      skip: offset,
+      limit,
+    });
+  };
+
+  getDraftEmails = (offset, limit) => {
+    return this.EmailModel.find({ type: "draft" }, null, {
+      skip: offset,
+      limit,
+    });
+  };
+
+  getSpamEmails = (offset, limit) => {
+    return this.EmailModel.find({ isSpam: true }, null, {
+      skip: offset,
+      limit,
+    });
   };
 
   setEmailAsImportant = async (emailId, isImportant) => {
@@ -82,12 +134,18 @@ class EmailService {
     return email.save();
   };
 
-  getSentEmails = () => {
-    return this.EmailModel.find({
-      $or: [{ type: 'outgoing' }, { type: 'sent' }]
-    });
+  getSentEmails = (offset, limit) => {
+    return this.EmailModel.find(
+      {
+        $or: [{ type: "outgoing" }, { type: "sent" }],
+      },
+      null,
+      {
+        skip: offset,
+        limit,
+      }
+    );
   };
-
-};
+}
 
 module.exports = EmailService;

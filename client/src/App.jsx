@@ -6,6 +6,7 @@ import NavigationBar from './components/navigationBar/NavigationBarContainer';
 import Inbox from './components/inbox/InboxContainer';
 import Alert from './components/alert/AlertContainer';
 import Email from './components/email/EmailContainer';
+import UtilityBar from './components/utilityBar/UtilityBarContainer';
 // Styles
 import './App.scss';
 import './global.scss';
@@ -17,6 +18,7 @@ const App = ({ alertTitle, showAlert, alertText }) => {
     <BrowserRouter>
       <div>
         <Header />
+        <UtilityBar />
         <div className="content">
           <NavigationBar />
           <Route exact path={paths.root} render={() => <Inbox path={paths.api.inboxEmails} />} />
