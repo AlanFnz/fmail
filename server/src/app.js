@@ -20,6 +20,23 @@ app.use(cors());
 const MAX_EMAILS_PER_PAGE = 50;
 
 app.get(
+  "/api/v1/search",
+  catchExceptions(async (req, res) => {
+      try {
+      let { q, offset, limit } = req.query;
+      offset = parseInt(offset);
+      limit = parseInt(limit);
+      limit = Math.min(limit, MAX_EMAILS_PER_PAGE);
+      const emails = await emailService.search(q, offset, limit);
+      res.json(emails);
+    } catch (e) {
+      console.log(e)
+    }
+    })
+
+);
+
+app.get(
   "/api/v1/inbox-emails",
   catchExceptions(async (req, res) => {
     let { offset, limit } = req.query;
@@ -34,8 +51,9 @@ app.get(
 app.get(
   "/api/v1/emails/count",
   catchExceptions(async (req, res) => {
-    const { emailType } = req.query;
-    const count = await emailService.countEmails(emailType);
+    const { emailType, q } = req.query;
+    const count = await emailService.countEmails(emailType, q);
+    console.log('count:', count);
     res.json({ count });
   })
 );

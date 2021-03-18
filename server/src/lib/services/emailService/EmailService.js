@@ -1,10 +1,22 @@
 class EmailService {
-  constructor(EmailModel) {
+  constructor(EmailModel, SearchService) {
     this.EmailModel = EmailModel;
+    this.searchService = SearchService;
   }
 
-  countEmails = (emailType) => {
+  search = async (q, offset, limit) => {
+    const results = await this.searchService.findEmail(q, offset, limit);
+    const idArray = results.map((res) => res._source.id);
+    return this.EmailModel.find({
+      _id: { $in: idArray },
+    });
+  };
+
+  countEmails = (emailType, q) => {
     switch (emailType) {
+      case "search":
+        return this.searchService.countFoundEmails(q);
+
       case "inbox":
         return this.EmailModel.count({
           type: "received",
@@ -65,21 +77,30 @@ class EmailService {
     };
   };
 
-  createEmail = (recipients, subject, message) => {
+  createEmail = async (recipients, subject, message) => {
     const type = "outgoing";
-    return new this.EmailModel({ recipients, subject, message, type }).save();
+    const email = await new this.EmailModel({
+      recipients,
+      subject,
+      message,
+      type,
+    }).save();
+    await this.searchService.saveEmail(email);
+    return email;
   };
 
-  createDraftEmail = (recipients, maybeSubject, message, viewedAt) => {
+  createDraftEmail = async (recipients, maybeSubject, message, viewedAt) => {
     const type = "draft";
     const subject = maybeSubject || "<No subject>";
-    return new this.EmailModel({
+    const email = await new this.EmailModel({
       recipients,
       subject,
       message,
       type,
       viewedAt,
     }).save();
+    await this.searchService.saveEmail(email);
+    return email;
   };
 
   updateDraftEmail = async (emailId, recipients, subject, message) => {
@@ -96,7 +117,9 @@ class EmailService {
   };
 
   removeEmail = async (emailId) => {
-    const email = await this.EmailModel.findById(emailId);
+    const promise = this.EmailModel.findById(emailId);
+    const promise2 = this.searchService.deleteEmail(emailId);
+    const [email] = await Promise.all([promise, promise2]);
     return email.remove();
   };
 
@@ -104,6 +127,9 @@ class EmailService {
     return this.EmailModel.find({ type: "received", isSpam: false }, null, {
       skip: offset,
       limit,
+      sort: {
+        timestamp: -1,
+      },
     });
   };
 
@@ -111,6 +137,9 @@ class EmailService {
     return this.EmailModel.find({ isImportant: true }, null, {
       skip: offset,
       limit,
+      sort: {
+        timestamp: -1,
+      },
     });
   };
 
@@ -118,6 +147,9 @@ class EmailService {
     return this.EmailModel.find({ type: "draft" }, null, {
       skip: offset,
       limit,
+      sort: {
+        timestamp: -1,
+      },
     });
   };
 
@@ -125,6 +157,9 @@ class EmailService {
     return this.EmailModel.find({ isSpam: true }, null, {
       skip: offset,
       limit,
+      sort: {
+        timestamp: -1,
+      },
     });
   };
 
@@ -143,6 +178,9 @@ class EmailService {
       {
         skip: offset,
         limit,
+        sort: {
+          timestamp: -1,
+        },
       }
     );
   };
