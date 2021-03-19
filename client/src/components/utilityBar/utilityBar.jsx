@@ -14,7 +14,6 @@ class UtilityBar extends React.Component {
   };
 
   onNext = () => {
-    console.log('asd', this.props);
     this.props.onNext(
       this.props.rangeStart,
       this.props.totalEmails,

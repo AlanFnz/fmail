@@ -24,7 +24,6 @@ const composeEmailReducer = (state = initState, action) => {
     case SET_FORM_FIELD:
       const newField = { [action.payload.key]: action.payload.value };
       const newForm = Object.assign({}, state.form, newField);
-      // const newForm = { ...state.form, newField };
       return {
         ...state,
         form: newForm,

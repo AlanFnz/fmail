@@ -1,21 +1,24 @@
-export default (pathname) => {
+import paths from '../../../config/paths';
+
+export default pathname => {
   switch (pathname) {
-    case "/":
-      return "inbox";
-      
-    case "/inbox":
+    case paths.root:
+    case paths.inbox:
       return "inbox";
 
-    case "/important":
+    case paths.searchTemplate:
+      return "search";
+
+    case paths.important:
       return "important";
 
-    case "/sent-mail":
+    case paths.sentMail:
       return "sent";
 
-    case "/drafts":
+    case paths.drafts:
       return "drafts";
 
-    case "/spam":
+    case paths.spam:
       return "spam";
 
     default:

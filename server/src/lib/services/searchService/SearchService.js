@@ -14,7 +14,7 @@ class SearchService {
       },
     });
 
-    return response.count;
+    return response.body.count;
   };
 
   findEmail = async (q, offset, limit) => {

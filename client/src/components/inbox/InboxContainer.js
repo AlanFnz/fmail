@@ -10,23 +10,26 @@ import pathnameToEmailType from './utils/pathnameToEmailType';
 import { EMAIL_LIMIT } from './config';
 import { SetEmailOverview } from '../../actions/navigationListActions';
 import { SetLocation } from'../../actions/navigationListActions';
-import { SetEmails, SetTotalNumberOfEmails, SetLastEmailOffset } from'../../actions/inboxActions';
+import { SetEmails, SetTotalNumberOfEmails, SetLastEmailOffset, QueryWasMade } from'../../actions/inboxActions';
 import Inbox from './Inbox';
 
 const fetchEmailsWithFetch = fetchEmails(window.fetch);
 const fetchApi = fetchAbsolute(fetch)('http://localhost:5000');
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, { location }) => {
   return {
+    q: new URLSearchParams(location.search).get('q'),
     pathname: state.navigationList.pathname,
     emails: state.inbox.emails,
-    emailOffset: state.inbox.emailOffset
+    emailOffset: state.inbox.emailOffset,
+    queryWasMade: state.inbox.queryWasMade,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchEmails: async (lastPathname, pathname, emailOffset) => {
+    onSearch: () => dispatch(QueryWasMade(false)),
+    fetchEmails: async (lastPathname, pathname, emailOffset, query) => {
       dispatch(SetLocation(pathname));
       try {
         // TODO: Optimization (too many requests)
@@ -41,7 +44,7 @@ const mapDispatchToProps = dispatch => {
         const promise = fetchEmailsWithFetch(pathname, offset, EMAIL_LIMIT);
         const promise2 = fetchApi(paths.api.overview);
         const emailType = pathnameToEmailType(pathname);
-        const promise3 = fetchApi(paths.api.emailCount(emailType));
+        const promise3 = fetchApi(paths.api.emailCount(emailType, query));
         const [response, response2, response3] = await Promise.all([
           promise,
           promise2,

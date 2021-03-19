@@ -1,4 +1,4 @@
-import paths from "../config/paths";
+import paths from '../config/paths';
 import fetchAbsolute from 'fetch-absolute';
 
 const fetchApi = fetchAbsolute(fetch)('http://localhost:5000');
@@ -6,10 +6,12 @@ const fetchApi = fetchAbsolute(fetch)('http://localhost:5000');
 export default () => (pathname, offset, limit) => {
   switch (pathname) {
     case paths.inbox:
-      return fetchApi(paths.api.inboxEmails(offset, limit));
-
     case paths.root:
       return fetchApi(paths.api.inboxEmails(offset, limit));
+
+    case paths.searchTemplate:
+      const q = new URLSearchParams(window.location.search).get("q");
+      return fetchApi(paths.api.search(q, offset, limit));
 
     case paths.important:
       return fetchApi(paths.api.importantEmails(offset, limit));
