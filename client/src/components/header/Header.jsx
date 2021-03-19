@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import paths from '../../config/paths';
-import Input from "@material-ui/core/Input";
-import Button from "@material-ui/core/Button";
-import SearchIcon from "@material-ui/icons/Search";
+import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
+import SearchIcon from '@material-ui/icons/Search';
 import './Header.scss';
 
 class Header extends React.Component {
